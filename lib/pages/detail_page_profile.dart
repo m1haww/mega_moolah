@@ -103,7 +103,7 @@ class _DetailPageProfileState extends State<DetailPageProfile> {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
-                  color: Color(0xffF5CCA0),
+                  color: const Color(0xffF5CCA0),
                 ),
                 padding: const EdgeInsets.symmetric(
                     vertical: 20.0, horizontal: 16.0),
@@ -113,17 +113,17 @@ class _DetailPageProfileState extends State<DetailPageProfile> {
                   children: [
                     Text(
                       "Nickname: $nickname",
-                      style: TextStyle(height: 1.5),
+                      style: const TextStyle(height: 1.5),
                     ),
                     const SizedBox(height: 12),
                     Text(
                       "Age: $age",
-                      style: TextStyle(height: 1.5),
+                      style: const TextStyle(height: 1.5),
                     ),
                     const SizedBox(height: 12),
                     Text(
                       "Email: $email",
-                      style: TextStyle(height: 1.5),
+                      style: const TextStyle(height: 1.5),
                     ),
                   ],
                 ),

@@ -19,9 +19,9 @@ class _ProfilePageState extends State<ProfilePage> {
   XFile? _image;
 
   Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
+    final ImagePicker picker = ImagePicker();
     final XFile? pickedImage =
-        await _picker.pickImage(source: ImageSource.gallery);
+        await picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       _image = pickedImage;

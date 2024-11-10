@@ -34,8 +34,8 @@ class _SplashScreenState extends State<SplashScreen> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          boxShadow: const [
-            BoxShadow(
+          boxShadow: [
+            const BoxShadow(
               color: Colors.black26,
               blurRadius: 6,
               offset: Offset(0, 4),

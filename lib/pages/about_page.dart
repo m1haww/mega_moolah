@@ -23,7 +23,7 @@ final List<QuestionsInfo> questions = [
     title: 'Which animal has a trunk?',
     description:
         'Elephants are the largest land animals and are known for their long trunks.',
-    photoUrl: 'images/asian-elephant.jpg',
+    photoUrl: 'images/asian-elephat.jpg',
   ),
   QuestionsInfo(
     title: 'Which animal is known for its black and orange stripes?',
@@ -155,7 +155,6 @@ class _AboutPageState extends State<AboutPage> {
                       itemCount: 5,
                       itemBuilder: (context, index) {
                         List<String> answers = [
-                          questions[_currentQuestionIndex].title,
                           'Lion',
                           'Elephant',
                           'Tiger',

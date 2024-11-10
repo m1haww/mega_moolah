@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:mega_moolah/pages/about_page.dart';
 import 'package:mega_moolah/pages/home_page.dart';
 import 'package:mega_moolah/pages/profile_page.dart';
