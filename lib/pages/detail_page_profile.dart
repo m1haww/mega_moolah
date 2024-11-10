@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class DetailPageProfile extends StatelessWidget {
+class DetailPageProfile extends StatefulWidget {
   final String nickname;
   final String age;
   final String email;
@@ -17,6 +17,25 @@ class DetailPageProfile extends StatelessWidget {
   });
 
   @override
+  _DetailPageProfileState createState() => _DetailPageProfileState();
+}
+
+class _DetailPageProfileState extends State<DetailPageProfile> {
+  late String nickname;
+  late String age;
+  late String email;
+  late XFile? avatar;
+
+  @override
+  void initState() {
+    super.initState();
+    nickname = widget.nickname;
+    age = widget.age;
+    email = widget.email;
+    avatar = widget.avatar;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -25,8 +44,8 @@ class DetailPageProfile extends StatelessWidget {
         title: const Text("Profile Details"),
         actions: [
           GestureDetector(
-            onTap: () {
-              Navigator.push(
+            onTap: () async {
+              final updatedData = await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => EditProfilePage(
@@ -37,6 +56,15 @@ class DetailPageProfile extends StatelessWidget {
                   ),
                 ),
               );
+
+              if (updatedData != null) {
+                setState(() {
+                  nickname = updatedData['nickname'];
+                  age = updatedData['age'];
+                  email = updatedData['email'];
+                  avatar = updatedData['avatar'];
+                });
+              }
             },
             child: const Padding(
               padding: EdgeInsets.all(8.0),
@@ -205,7 +233,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
             const SizedBox(height: 40),
             ElevatedButton(
               onPressed: () {
-                // Întoarce datele editate către pagina anterioară
                 Navigator.pop(context, {
                   'nickname': nicknameController.text,
                   'age': ageController.text,
