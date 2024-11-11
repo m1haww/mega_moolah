@@ -38,7 +38,9 @@ class _DetailPageProfileState extends State<DetailPageProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xffF5E1A4),
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 238, 195, 131),
         centerTitle: true,
         automaticallyImplyLeading: false,
         title: const Text("Profile Details"),
@@ -191,7 +193,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xffF5E1A4),
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 238, 195, 131),
         title: const Text("Edit Profile"),
       ),
       body: Padding(

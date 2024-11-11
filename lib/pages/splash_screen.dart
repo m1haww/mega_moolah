@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mega_moolah/pages/navigation_page.dart';
+import 'package:mega_moolah/pages/onboarding_page.dart';
 import 'package:mega_moolah/utils/utils.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const NavigationPage()),
+        MaterialPageRoute(builder: (context) => const OnboardingPage()),
       );
     });
   }
@@ -35,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
             end: Alignment.bottomRight,
           ),
           boxShadow: [
-            const BoxShadow(
+            BoxShadow(
               color: Colors.black26,
               blurRadius: 6,
               offset: Offset(0, 4),

@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 class QuestionsInfo {
   final String title;
   final String description;
-  final String photoUrl;
 
   QuestionsInfo({
     required this.title,
     required this.description,
-    required this.photoUrl,
   });
 }
 
@@ -17,34 +15,38 @@ final List<QuestionsInfo> questions = [
     title: 'Which animal is known as the King of the Jungle?',
     description:
         'The lion is known as the king of the jungle. It is one of the most powerful animals in the wild.',
-    photoUrl: 'images/lion.jpeg',
   ),
   QuestionsInfo(
     title: 'Which animal has a trunk?',
     description:
         'Elephants are the largest land animals and are known for their long trunks.',
-    photoUrl: 'images/asian-elephat.jpg',
   ),
   QuestionsInfo(
     title: 'Which animal is known for its black and orange stripes?',
     description:
         'Tigers are famous for their distinctive black and orange stripes.',
-    photoUrl: 'images/blake-meyer-5RBXc7R-YWs-unsplash-scaled.jpg',
   ),
   QuestionsInfo(
     title:
         'Which animal is known for its large size and white fur in polar regions?',
     description:
         'Polar bears are large mammals found in Arctic regions, known for their thick white fur.',
-    photoUrl: 'images/D146896.jpg',
   ),
   QuestionsInfo(
     title: 'Which animal is known for its intelligence and ability to swim?',
     description:
         'Dolphins are intelligent marine animals known for their friendly nature and agility in water.',
-    photoUrl: 'images/3B0E5A88-E556-FDFE-9AE0EFD757715600.jpg',
   ),
 ];
+
+// Map of answers and corresponding image paths
+final Map<String, String> answerImageMap = {
+  'Lion': 'images/lion.jpeg',
+  'Elephant': 'images/asian-elephat.jpg',
+  'Tiger': 'images/blake-meyer-5RBXc7R-YWs-unsplash-scaled.jpg',
+  'Polar Bear': 'images/D146896.jpg',
+  'Dolphin': 'images/3B0E5A88-E556-FDFE-9AE0EFD757715600.jpg',
+};
 
 class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
@@ -56,6 +58,14 @@ class AboutPage extends StatefulWidget {
 class _AboutPageState extends State<AboutPage> {
   int _score = 0;
   int _currentQuestionIndex = 0;
+  List<MapEntry<String, String>> _shuffledAnswers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _shuffleQuestions();
+    _shuffleAnswers();
+  }
 
   void _shuffleQuestions() {
     setState(() {
@@ -64,16 +74,40 @@ class _AboutPageState extends State<AboutPage> {
     });
   }
 
+  void _shuffleAnswers() {
+    setState(() {
+      _shuffledAnswers = answerImageMap.entries.toList();
+      _shuffledAnswers.shuffle();
+    });
+  }
+
   void _checkAnswer(String selectedAnswer) {
-    if (selectedAnswer == questions[_currentQuestionIndex].title) {
+    // Define the correct answers based on the question titles
+    final correctAnswers = {
+      'Which animal is known as the King of the Jungle?': 'Lion',
+      'Which animal has a trunk?': 'Elephant',
+      'Which animal is known for its black and orange stripes?': 'Tiger',
+      'Which animal is known for its large size and white fur in polar regions?':
+          'Polar Bear',
+      'Which animal is known for its intelligence and ability to swim?':
+          'Dolphin',
+    };
+
+    // Retrieve the correct answer for the current question
+    String correctAnswer =
+        correctAnswers[questions[_currentQuestionIndex].title] ?? '';
+
+    if (selectedAnswer == correctAnswer) {
       setState(() {
         _score += 10;
       });
     }
+
     if (_currentQuestionIndex < questions.length - 1) {
       setState(() {
         _currentQuestionIndex++;
       });
+      _shuffleAnswers(); // Reshuffle answers for each new question
     } else {
       showDialog(
         context: context,
@@ -85,6 +119,10 @@ class _AboutPageState extends State<AboutPage> {
               onPressed: () {
                 Navigator.of(context).pop();
                 _shuffleQuestions();
+                _shuffleAnswers();
+                setState(() {
+                  _score = 0; // Reset score for a new quiz
+                });
               },
               child: const Text('Start New Quiz'),
             ),
@@ -97,10 +135,11 @@ class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xffF5E1A4),
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 238, 195, 131),
         title: const Text('Guess the Animal'),
         centerTitle: true,
-        backgroundColor: Colors.white,
         actions: [
           Row(
             children: [
@@ -152,18 +191,13 @@ class _AboutPageState extends State<AboutPage> {
                         crossAxisSpacing: 16.0,
                         mainAxisSpacing: 16.0,
                       ),
-                      itemCount: 5,
+                      itemCount: _shuffledAnswers.length,
                       itemBuilder: (context, index) {
-                        List<String> answers = [
-                          'Lion',
-                          'Elephant',
-                          'Tiger',
-                          'Polar Bear',
-                          'Dolphin'
-                        ]..shuffle();
+                        String animal = _shuffledAnswers[index].key;
+                        String imagePath = _shuffledAnswers[index].value;
 
                         return GestureDetector(
-                          onTap: () => _checkAnswer(answers[index]),
+                          onTap: () => _checkAnswer(animal),
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(16),
@@ -181,12 +215,13 @@ class _AboutPageState extends State<AboutPage> {
                               children: [
                                 Expanded(
                                   child: Image.asset(
-                                    questions[_currentQuestionIndex].photoUrl,
+                                    imagePath,
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
                                 const SizedBox(height: 8.0),
                                 Text(
-                                  answers[index],
+                                  animal,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontFamily: "Bellefair",

@@ -72,7 +72,9 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xffF5E1A4),
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 238, 195, 131),
         centerTitle: true,
         title: const Text("Profile"),
         actions: [
