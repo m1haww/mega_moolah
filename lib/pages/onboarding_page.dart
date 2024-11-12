@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mega_moolah/pages/navigation_page.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -10,6 +11,7 @@ class OnboardingPage extends StatefulWidget {
 
 class _OnboardingPageState extends State<OnboardingPage> {
   int _currentPage = 0;
+  final PageController _pageController = PageController(viewportFraction: 1);
 
   final List<Widget> _pages = [
     const OnboardingContent(
@@ -29,6 +31,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   void _nextPage() {
     if (_currentPage < _pages.length - 1) {
+      _pageController.nextPage(
+          duration: const Duration(milliseconds: 350), curve: Curves.easeInOut);
       setState(() {
         _currentPage++;
       });
@@ -43,15 +47,36 @@ class _OnboardingPageState extends State<OnboardingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF5E1A4),
+      backgroundColor: const Color(0xffFCEEB5),
       body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _pages[_currentPage],
-            const SizedBox(height: 150),
+            Expanded(
+              child: PageView.builder(
+                itemCount: _pages.length,
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentPage = index;
+                  });
+                },
+                itemBuilder: (context, index) => _pages[index],
+              ),
+            ),
+            const SizedBox(height: 20),
+            AnimatedSmoothIndicator(
+              activeIndex: _currentPage,
+              count: _pages.length,
+              effect: const WormEffect(
+                dotHeight: 12,
+                dotWidth: 12,
+                activeDotColor: Color(0xffE48F45),
+                dotColor: Color(0xffE7D0A3),
+              ),
+            ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 30.0),
+              padding: const EdgeInsets.all(30.0),
               child: HexagonalButton(onPressed: _nextPage),
             ),
           ],
@@ -66,30 +91,39 @@ class OnboardingContent extends StatelessWidget {
   final String text;
 
   const OnboardingContent({
-    Key? key,
+    super.key,
     required this.image,
     required this.text,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center, // Center the content
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(
-          padding: const EdgeInsets.all(40.0),
-          child: Image.asset(image, height: 200),
-        ), // Ensure the image path is correct
-        const SizedBox(height: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(25),
+            child: Image.asset(
+              image,
+              width: double.infinity,
+              height: 300,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
         Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 30.0),
           child: Text(
             text,
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontFamily: "Bellefair",
               fontSize: 20,
-              color: Color(0xffE48F45),
+              color: Color(0xff994D1C),
+              letterSpacing: 0.5,
             ),
           ),
         ),
@@ -101,7 +135,7 @@ class OnboardingContent extends StatelessWidget {
 class HexagonalButton extends StatelessWidget {
   final VoidCallback onPressed;
 
-  const HexagonalButton({Key? key, required this.onPressed}) : super(key: key);
+  const HexagonalButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -109,17 +143,17 @@ class HexagonalButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(25),
         ),
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
         backgroundColor: const Color(0xffE48F45),
-        shadowColor: Colors.grey,
-        elevation: 5,
+        shadowColor: Colors.black45,
+        elevation: 8,
       ),
       child: const Icon(
-        Icons.arrow_forward,
-        color: Color(0xff994D1C),
-        size: 30,
+        Icons.arrow_forward_ios,
+        color: Colors.white,
+        size: 28,
       ),
     );
   }

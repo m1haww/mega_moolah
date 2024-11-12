@@ -74,7 +74,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: const Color(0xffF5E1A4),
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 238, 195, 131),
+        backgroundColor: const Color.fromARGB(255, 238, 195, 131),
         centerTitle: true,
         title: const Text("Profile"),
         actions: [
@@ -109,9 +109,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: CircleAvatar(
                     radius: 50,
                     backgroundColor: const Color(0xffE48F45),
-                    backgroundImage: _image != null
-                        ? FileImage(File(_image!.path))
-                        : const AssetImage('assets/default_avatar.png'),
+                    backgroundImage:
+                        _image != null ? FileImage(File(_image!.path)) : null,
                     child: _image == null
                         ? const Icon(
                             Icons.person,

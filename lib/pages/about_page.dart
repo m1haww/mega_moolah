@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class QuestionsInfo {
@@ -97,39 +98,66 @@ class _AboutPageState extends State<AboutPage> {
     String correctAnswer =
         correctAnswers[questions[_currentQuestionIndex].title] ?? '';
 
-    if (selectedAnswer == correctAnswer) {
+    // Check if the selected answer is correct
+    bool isCorrect = selectedAnswer == correctAnswer;
+
+    if (isCorrect) {
       setState(() {
         _score += 10;
       });
     }
 
-    if (_currentQuestionIndex < questions.length - 1) {
-      setState(() {
-        _currentQuestionIndex++;
-      });
-      _shuffleAnswers(); // Reshuffle answers for each new question
-    } else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Quiz Completed'),
-          content: Text('Your score is $_score'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _shuffleQuestions();
-                _shuffleAnswers();
+    // Show Cupertino pop-up for correct/incorrect answer
+    showCupertinoDialog(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        title: Text(isCorrect ? 'Correct!' : 'Oops!'),
+        content: Text(isCorrect
+            ? 'You got it right! Well done.'
+            : 'The correct answer was $correctAnswer.'),
+        actions: [
+          CupertinoDialogAction(
+            onPressed: () {
+              Navigator.of(context).pop();
+              if (_currentQuestionIndex < questions.length - 1) {
                 setState(() {
-                  _score = 0; // Reset score for a new quiz
+                  _currentQuestionIndex++;
                 });
-              },
-              child: const Text('Start New Quiz'),
-            ),
-          ],
-        ),
-      );
-    }
+                _shuffleAnswers();
+              } else {
+                _showCompletionDialog(); // Show final quiz completion pop-up
+              }
+            },
+            child: const Text('Next'),
+          ),
+        ],
+      ),
+    );
+  }
+
+// Show final quiz completion pop-up
+  void _showCompletionDialog() {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        title: const Text('Quiz Completed'),
+        content: Text('Your final score is $_score!'),
+        actions: [
+          CupertinoDialogAction(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _shuffleQuestions();
+              _shuffleAnswers();
+              setState(() {
+                _score = 0; // Reset score for a new quiz
+                _currentQuestionIndex = 0; // Reset question index
+              });
+            },
+            child: const Text('Start New Quiz'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -137,23 +165,20 @@ class _AboutPageState extends State<AboutPage> {
     return Scaffold(
       backgroundColor: const Color(0xffF5E1A4),
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 238, 195, 131),
+        backgroundColor: const Color.fromARGB(255, 238, 195, 131),
         title: const Text('Guess the Animal'),
         centerTitle: true,
         actions: [
           Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.monetization_on, color: Colors.amber),
-                onPressed: () {},
-              ),
-              const SizedBox(width: 8.0),
+              const Icon(Icons.monetization_on, color: Colors.deepOrange),
+              const SizedBox(width: 7),
               Text(
                 '$_score',
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.amber,
+                  color: Colors.deepOrange,
                 ),
               ),
               const SizedBox(width: 16.0),
@@ -196,42 +221,82 @@ class _AboutPageState extends State<AboutPage> {
                         String animal = _shuffledAnswers[index].key;
                         String imagePath = _shuffledAnswers[index].value;
 
-                        return GestureDetector(
-                          onTap: () => _checkAnswer(animal),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              color: const Color(0xffF5CCA0),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 6,
-                                  offset: Offset(0, 4),
-                                ),
-                              ],
+                        return Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            gradient: const LinearGradient(
+                              colors: [Color(0xffF5CCA0), Color(0xffE6B891)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
                             ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 8,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                  ),
                                   child: Image.asset(
                                     imagePath,
                                     fit: BoxFit.cover,
+                                    width: double.infinity,
                                   ),
                                 ),
-                                const SizedBox(height: 8.0),
-                                Text(
-                                  animal,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontFamily: "Bellefair",
-                                    color: Color(0xffE48F45),
-                                  ),
-                                  textAlign: TextAlign.center,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      animal,
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: "Bellefair",
+                                        color: Color(0xff6B240C),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        _checkAnswer(animal);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            const Color(0xff994D1C),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 8,
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        'Choose',
+                                        style: TextStyle(
+                                          color: Color(0xffF5CCA0),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(height: 8.0),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         );
                       },
